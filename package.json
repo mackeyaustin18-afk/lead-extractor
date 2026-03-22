@@ -1,0 +1,32 @@
+{
+  "name": "b2b-lead-extractor",
+  "version": "2.0.0",
+  "description": "B2B Lead Extraction API - text parsing, CSV cleaning, and search",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "multer": "^1.4.5-lts.1",
+    "csv-parse": "^5.5.6",
+    "csv-stringify": "^6.5.0",
+    "dotenv": "^16.4.5",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "express-rate-limit": "^7.4.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.12",
+    "@types/cors": "^2.8.17",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
