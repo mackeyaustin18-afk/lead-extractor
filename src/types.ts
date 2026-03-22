@@ -27,3 +27,27 @@ export interface SearchRequest {
   query: string;         // e.g. "plumbers in Erie PA"
   max_results?: number;  // default 10
 }
+
+// --- Google Places (Option B) ---
+
+export interface PlacesSearchRequest {
+  query: string;         // e.g. "plumbers in Erie PA"
+  max_results?: number;  // default 10, max 20
+  location?: string;     // optional location hint (appended to query if provided)
+}
+
+export interface PlacesLead {
+  name: string | null;
+  phone: string | null;
+  address: string | null;
+  website: string | null;
+  rating: number | null;
+  google_maps_url: string | null;
+}
+
+export interface PlacesSearchResponse {
+  success: boolean;
+  leads: PlacesLead[];
+  count: number;
+  query: string;
+}

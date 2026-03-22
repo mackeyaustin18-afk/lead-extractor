@@ -44,7 +44,7 @@ app.get("/health", (_req, res) => {
     endpoints: [
       "POST /extract/text   - Parse raw text into leads",
       "POST /extract/csv    - Upload CSV, extract leads",
-      "POST /extract/search - Search for leads (coming soon)",
+      "POST /extract/search - Search for business leads via Google Places",
     ],
   });
 });
@@ -76,6 +76,7 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`Auth: ${process.env.API_SECRET_KEY ? "ENABLED" : "DISABLED (dev mode)"}`);
   console.log(`Gemini: ${process.env.GEMINI_API_KEY ? "configured" : "NOT CONFIGURED"}`);
+  console.log(`Places: ${process.env.GOOGLE_MAPS_API_KEY ? "configured" : "NOT CONFIGURED"}`);
   console.log("=".repeat(50));
 });
 

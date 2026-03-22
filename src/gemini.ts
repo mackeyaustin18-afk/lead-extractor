@@ -83,7 +83,7 @@ export async function extractFromText(text: string): Promise<Lead[]> {
     throw new Error(`Gemini API error ${response.status}: ${errText.slice(0, 200)}`);
   }
 
-  const data = await response.json();
+  const data = await response.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
   const rawJson = data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
 
   // Parse the response — handle both array and single object
