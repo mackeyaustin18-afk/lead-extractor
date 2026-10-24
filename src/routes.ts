@@ -10,6 +10,15 @@ import { searchPlaces } from "./places-service";
 import { authMiddleware } from "./auth";
 import { TextExtractionRequest, ExtractionResult, PlacesSearchRequest } from "./types";
 
+/**
+ * body-parser 2 (shipped with Express 5) sets req.body to undefined when the
+ * request has no parsed body. Express 4 initialized it to {}. Missing-field
+ * checks should still return 400 in that case, not throw.
+ */
+function parsedBody<T>(body: unknown): T {
+  return (body ?? {}) as T;
+}
+
 const router = Router();
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -33,7 +42,7 @@ router.use(authMiddleware);
  */
 router.post("/text", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { text } = req.body as TextExtractionRequest;
+    const { text } = parsedBody<TextExtractionRequest>(req.body);
 
     if (!text || typeof text !== "string") {
       res.status(400).json({
@@ -108,8 +117,9 @@ router.post("/csv", upload.single("file"), async (req: Request, res: Response): 
  * Body: { "query": "plumbers in Erie PA", "max_results": 10, "location": "Erie PA" }
  */
 router.post("/search", async (req: Request, res: Response): Promise<void> => {
+  const body = parsedBody<PlacesSearchRequest>(req.body);
   try {
-    const { query, max_results, location } = req.body as PlacesSearchRequest;
+    const { query, max_results, location } = body;
 
     if (!query || typeof query !== "string") {
       res.status(400).json({
@@ -131,7 +141,7 @@ router.post("/search", async (req: Request, res: Response): Promise<void> => {
       success: false,
       leads: [],
       count: 0,
-      query: (req.body as PlacesSearchRequest).query ?? "",
+      query: typeof body.query === "string" ? body.query : "",
       errors: [error instanceof Error ? error.message : "Search failed"],
     });
   }

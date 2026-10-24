@@ -62,14 +62,25 @@ app.use((_req, res) => {
   res.status(404).json({ success: false, error: "Endpoint not found. Try GET /health" });
 });
 
-// Global error handler
-app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+// Global error handler.
+// Express 5 forwards rejected promises from async handlers here. If a response
+// was already started, defer to the default handler instead of writing again.
+app.use((err: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error("Unhandled error:", err);
+  if (res.headersSent) {
+    next(err);
+    return;
+  }
   res.status(500).json({ success: false, error: "Internal server error" });
 });
 
-// Start server
-app.listen(PORT, "0.0.0.0", () => {
+// Start server.
+// Express 5 reports listen failures (for example EADDRINUSE) to this callback
+// instead of throwing them the way Express 4 did.
+app.listen(PORT, "0.0.0.0", (error) => {
+  if (error) {
+    throw error;
+  }
   console.log("=".repeat(50));
   console.log("B2B Lead Extractor API v2.0");
   console.log(`Running on http://0.0.0.0:${PORT}`);
